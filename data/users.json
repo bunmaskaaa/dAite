@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "name": "Alex Johnson",
+    "age": 26,
+    "gender": "male",
+    "interests": "hiking, photography, cooking, travel",
+    "personality": "introverted, thoughtful, creative, empathetic",
+    "values": "honesty, adventure, personal growth, family",
+    "relationship_goal": "long-term relationship",
+    "bio": "I love exploring new trails on weekends and cooking meals from different cultures. Looking for someone who enjoys the quiet moments as much as the adventures."
+  },
+  {
+    "id": 2,
+    "name": "Priya Sharma",
+    "age": 25,
+    "gender": "female",
+    "interests": "reading, yoga, travel, art galleries",
+    "personality": "introverted, thoughtful, empathetic, calm",
+    "values": "honesty, personal growth, mindfulness, family",
+    "relationship_goal": "long-term relationship",
+    "bio": "Book lover and yoga enthusiast. I find beauty in quiet afternoons at art galleries and deep conversations over chai. Seeking a genuine connection."
+  },
+  {
+    "id": 3,
+    "name": "Marcus Williams",
+    "age": 28,
+    "gender": "male",
+    "interests": "basketball, music production, gaming, fitness",
+    "personality": "extroverted, energetic, confident, humorous",
+    "values": "loyalty, ambition, fun, friendship",
+    "relationship_goal": "casual dating",
+    "bio": "Music producer by night, gym rat by morning. I live for good vibes, good music, and good people. Let's grab food and see where it goes."
+  },
+  {
+    "id": 4,
+    "name": "Sofia Reyes",
+    "age": 27,
+    "gender": "female",
+    "interests": "dancing, fitness, music, socializing",
+    "personality": "extroverted, energetic, spontaneous, warm",
+    "values": "fun, loyalty, ambition, living in the moment",
+    "relationship_goal": "casual dating",
+    "bio": "Life is too short to sit still. I dance salsa on Thursdays, hit the gym on weekends, and am always down for a spontaneous road trip."
+  },
+  {
+    "id": 5,
+    "name": "James Chen",
+    "age": 30,
+    "gender": "male",
+    "interests": "chess, podcasts, philosophy, cycling",
+    "personality": "analytical, introverted, curious, calm",
+    "values": "intellectual growth, honesty, independence, depth",
+    "relationship_goal": "long-term relationship",
+    "bio": "I spend my mornings cycling and my evenings down philosophy rabbit holes. Looking for someone who enjoys debating ideas and comfortable silence equally."
+  },
+  {
+    "id": 6,
+    "name": "Aisha Patel",
+    "age": 29,
+    "gender": "female",
+    "interests": "writing, philosophy, cycling, documentaries",
+    "personality": "analytical, curious, introverted, independent",
+    "values": "intellectual growth, honesty, depth, creativity",
+    "relationship_goal": "long-term relationship",
+    "bio": "Freelance writer obsessed with big ideas and long bike rides. I want a partner who challenges my thinking and doesn't mind a quiet night in with a good documentary."
+  },
+  {
+    "id": 7,
+    "name": "Ryan Park",
+    "age": 24,
+    "gender": "male",
+    "interests": "gaming, anime, tech, cooking",
+    "personality": "introverted, creative, humorous, loyal",
+    "values": "loyalty, fun, creativity, authenticity",
+    "relationship_goal": "long-term relationship",
+    "bio": "Software engineer who unwinds with gaming and anime. I cook elaborate meals on Sundays and am looking for someone genuine to share them with."
+  },
+  {
+    "id": 8,
+    "name": "Nina Gupta",
+    "age": 25,
+    "gender": "female",
+    "interests": "cooking, tech, anime, board games",
+    "personality": "introverted, creative, loyal, warm",
+    "values": "authenticity, loyalty, fun, creativity",
+    "relationship_goal": "long-term relationship",
+    "bio": "Data analyst by day, home chef by night. I bond over board games and late night anime. Looking for someone real who appreciates homemade pasta."
+  },
+  {
+    "id": 9,
+    "name": "David Kim",
+    "age": 32,
+    "gender": "male",
+    "interests": "surfing, photography, travel, coffee",
+    "personality": "adventurous, extroverted, spontaneous, optimistic",
+    "values": "adventure, freedom, experiences, positivity",
+    "relationship_goal": "casual dating",
+    "bio": "Chasing waves and sunsets around the world. I photograph everything and regret nothing. Looking for a travel buddy who can keep up."
+  },
+  {
+    "id": 10,
+    "name": "Leila Hassan",
+    "age": 28,
+    "gender": "female",
+    "interests": "travel, surfing, photography, hiking",
+    "personality": "adventurous, spontaneous, optimistic, extroverted",
+    "values": "freedom, adventure, experiences, authenticity",
+    "relationship_goal": "casual dating",
+    "bio": "Passport full, heart fuller. I surf, hike, and photograph my way through life. Looking for someone who says yes first and figures out the details later."
+  }
+]
