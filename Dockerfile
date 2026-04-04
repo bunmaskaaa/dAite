@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir faiss-cpu fastapi uvicorn numpy pandas \
 
 COPY . .
 
-CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD ["python3", "start.py"]
