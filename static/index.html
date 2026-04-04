@@ -25,7 +25,6 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -36,7 +35,6 @@
       overflow-x: hidden;
     }
 
-    /* Grain overlay */
     body::before {
       content: '';
       position: fixed;
@@ -47,7 +45,6 @@
       opacity: 0.4;
     }
 
-    /* Glow blobs */
     .blob {
       position: fixed;
       border-radius: 50%;
@@ -55,24 +52,10 @@
       pointer-events: none;
       z-index: 0;
     }
-    .blob-1 {
-      width: 500px; height: 500px;
-      top: -150px; left: -100px;
-      background: radial-gradient(circle, rgba(212,96,122,0.07), transparent 70%);
-    }
-    .blob-2 {
-      width: 400px; height: 400px;
-      bottom: -100px; right: -80px;
-      background: radial-gradient(circle, rgba(184,150,90,0.06), transparent 70%);
-    }
-    .blob-3 {
-      width: 300px; height: 300px;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(91,171,130,0.03), transparent 70%);
-    }
+    .blob-1 { width: 500px; height: 500px; top: -150px; left: -100px; background: radial-gradient(circle, rgba(212,96,122,0.07), transparent 70%); }
+    .blob-2 { width: 400px; height: 400px; bottom: -100px; right: -80px; background: radial-gradient(circle, rgba(184,150,90,0.06), transparent 70%); }
+    .blob-3 { width: 300px; height: 300px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(91,171,130,0.03), transparent 70%); }
 
-    /* Header */
     header {
       position: relative;
       z-index: 1;
@@ -108,7 +91,6 @@
       font-size: 2.8rem;
       font-weight: 300;
       letter-spacing: 4px;
-      background: linear-gradient(135deg, var(--text) 0%, var(--rose-glow) 50%, var(--gold) 100%);
       background: linear-gradient(135deg, #ede8e3, #d4607a, #b8965a);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -130,14 +112,12 @@
       margin: 20px auto 0;
     }
 
-    /* Progress bar */
     .progress-wrap {
       position: relative;
       z-index: 1;
       max-width: 600px;
       margin: 0 auto 32px;
       padding: 0 24px;
-      display: none;
     }
 
     .progress-track {
@@ -171,7 +151,6 @@
 
     .progress-label.active { color: var(--rose); }
 
-    /* Container */
     .container {
       position: relative;
       z-index: 1;
@@ -180,7 +159,6 @@
       padding: 0 24px 80px;
     }
 
-    /* Step cards */
     .step-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -222,7 +200,6 @@
       line-height: 1.6;
     }
 
-    /* Fields */
     .field { margin-bottom: 22px; }
 
     .row-2 {
@@ -264,6 +241,16 @@
 
     input::placeholder { color: rgba(106,102,130,0.5); }
 
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a6682' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    select option { background: var(--surface2); }
+
     textarea {
       width: 100%;
       background: var(--surface2);
@@ -277,7 +264,7 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       resize: none;
-      height: 110px;
+      height: 120px;
       line-height: 1.7;
     }
 
@@ -288,8 +275,7 @@
 
     textarea::placeholder { color: rgba(106,102,130,0.5); }
 
-    /* Multi-select chip system */
-    .chip-field { margin-bottom: 24px; }
+    .chip-field { margin-bottom: 28px; }
 
     .chip-label {
       display: flex;
@@ -338,7 +324,6 @@
 
     .chip.selected::before { content: '✓ '; font-size: 0.7rem; }
 
-    /* Error */
     .error-msg {
       background: rgba(208,96,112,0.08);
       border: 1px solid rgba(208,96,112,0.2);
@@ -352,7 +337,6 @@
       line-height: 1.5;
     }
 
-    /* Buttons */
     .btn-row {
       display: flex;
       gap: 12px;
@@ -397,7 +381,6 @@
 
     .btn-back:hover { border-color: var(--border-hover); color: var(--text); }
 
-    /* Loading */
     #loading {
       display: none;
       text-align: center;
@@ -405,9 +388,7 @@
       animation: fadeIn 0.4s ease both;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .loading-anim {
       display: flex;
@@ -417,14 +398,13 @@
     }
 
     .loading-dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--rose);
       animation: bounce 1.2s ease-in-out infinite;
     }
 
-    .loading-dot:nth-child(2) { animation-delay: 0.2s; background: mix(var(--rose), var(--gold), 50%); background: #c07868; }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; background: #c07868; }
     .loading-dot:nth-child(3) { animation-delay: 0.4s; background: var(--gold); }
 
     @keyframes bounce {
@@ -441,7 +421,6 @@
 
     .loading-sub { color: var(--muted); font-size: 0.83rem; font-weight: 300; }
 
-    /* Results */
     #results { display: none; }
 
     .results-header {
@@ -467,7 +446,6 @@
 
     .results-sub { color: var(--muted); font-size: 0.83rem; font-weight: 300; }
 
-    /* Match card */
     .match-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -480,10 +458,7 @@
       transition: border-color 0.3s, transform 0.2s;
     }
 
-    .match-card:hover {
-      border-color: rgba(212,96,122,0.25);
-      transform: translateY(-2px);
-    }
+    .match-card:hover { border-color: rgba(212,96,122,0.25); transform: translateY(-2px); }
 
     .match-card::after {
       content: '';
@@ -539,10 +514,7 @@
 
     .match-meta { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.5px; }
 
-    .score-block {
-      margin-left: auto;
-      text-align: right;
-    }
+    .score-block { margin-left: auto; text-align: right; }
 
     .score-value {
       font-family: 'Cormorant Garamond', serif;
@@ -567,7 +539,6 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* Ghosting section */
     .ghost-wrap {
       display: flex;
       align-items: flex-start;
@@ -598,7 +569,6 @@
     .flag-red { background: rgba(208,96,112,0.1); color: var(--red); }
 
     .risk-block { text-align: right; }
-
     .risk-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 
     .risk-pill {
@@ -656,7 +626,6 @@
   <div class="header-line"></div>
 </header>
 
-<!-- Progress -->
 <div class="progress-wrap" id="progress-wrap">
   <div class="progress-track">
     <div class="progress-fill" id="progress-fill"></div>
@@ -670,7 +639,7 @@
 
 <div class="container">
 
-  <!-- Step 1: Basic info -->
+  <!-- Step 1 -->
   <div class="step-card active" id="step1">
     <p class="step-num">Step 1 of 3</p>
     <h2 class="step-title">Who are you?</h2>
@@ -707,15 +676,16 @@
           <option value="everyone">Everyone</option>
         </select>
       </div>
-      <div class="field">
-        <label>I'm looking for</label>
-        <select id="relationship_goal">
-          <option value="">Select...</option>
-          <option value="long-term relationship">Long-term relationship</option>
-          <option value="casual dating">Casual dating</option>
-          <option value="friendship first">Friendship first</option>
-        </select>
-      </div>
+    </div>
+
+    <div class="field">
+      <label>I'm looking for</label>
+      <select id="relationship_goal">
+        <option value="">Select...</option>
+        <option value="long-term relationship">Long-term relationship</option>
+        <option value="casual dating">Casual dating</option>
+        <option value="friendship first">Friendship first</option>
+      </select>
     </div>
 
     <div class="error-msg" id="err1"></div>
@@ -724,7 +694,7 @@
     </div>
   </div>
 
-  <!-- Step 2: Personality -->
+  <!-- Step 2 -->
   <div class="step-card" id="step2">
     <p class="step-num">Step 2 of 3</p>
     <h2 class="step-title">What makes you, <em>you</em>?</h2>
@@ -761,7 +731,7 @@
     </div>
   </div>
 
-  <!-- Step 3: Bio -->
+  <!-- Step 3 -->
   <div class="step-card" id="step3">
     <p class="step-num">Step 3 of 3</p>
     <h2 class="step-title">Your story</h2>
@@ -769,7 +739,7 @@
 
     <div class="field">
       <label>Bio <span style="color:var(--muted);font-size:0.65rem;letter-spacing:1px">(min. 20 characters)</span></label>
-      <textarea id="bio" placeholder="E.g. I spend my weekends hiking and my evenings cooking elaborate meals. I'm looking for someone who appreciates the quiet moments as much as the adventures..."></textarea>
+      <textarea id="bio" placeholder="E.g. I spend my weekends hiking and my evenings cooking elaborate meals. Looking for someone who appreciates the quiet moments as much as the adventures..."></textarea>
     </div>
 
     <div class="error-msg" id="err3"></div>
@@ -806,38 +776,36 @@
 <script>
   const API = window.location.origin;
 
-  // ── Chip data ──────────────────────────────────────────────────────────────
   const INTERESTS = [
-    'hiking', 'photography', 'cooking', 'travel', 'reading', 'yoga',
-    'gaming', 'fitness', 'music', 'art', 'cycling', 'writing',
-    'philosophy', 'dancing', 'meditation', 'tech', 'cinema', 'coffee',
-    'surfing', 'running', 'podcasts', 'chess', 'volunteering', 'fashion'
+    'hiking','photography','cooking','travel','reading','yoga',
+    'gaming','fitness','music','art','cycling','writing',
+    'philosophy','dancing','meditation','tech','cinema','coffee',
+    'surfing','running','podcasts','chess','volunteering','fashion'
   ];
 
   const PERSONALITIES = [
-    'introverted', 'extroverted', 'analytical', 'creative', 'adventurous',
-    'empathetic', 'humorous', 'calm', 'energetic', 'ambitious',
-    'spontaneous', 'loyal', 'curious', 'optimistic', 'independent',
-    'thoughtful', 'warm', 'confident', 'patient', 'passionate'
+    'introverted','extroverted','analytical','creative','adventurous',
+    'empathetic','humorous','calm','energetic','ambitious',
+    'spontaneous','loyal','curious','optimistic','independent',
+    'thoughtful','warm','confident','patient','passionate'
   ];
 
   const VALUES = [
-    'honesty', 'adventure', 'personal growth', 'family', 'loyalty',
-    'ambition', 'fun', 'friendship', 'intellectual depth', 'independence',
-    'creativity', 'authenticity', 'freedom', 'mindfulness', 'compassion',
-    'integrity', 'balance', 'positivity', 'spirituality', 'career'
+    'honesty','adventure','personal growth','family','loyalty',
+    'ambition','fun','friendship','intellectual depth','independence',
+    'creativity','authenticity','freedom','mindfulness','compassion',
+    'integrity','balance','positivity','spirituality','career'
   ];
 
   const selected = { interests: [], personality: [], values: [] };
 
-  // ── Build chip grids ───────────────────────────────────────────────────────
   function buildChips(items, containerId, key, max) {
     const grid = document.getElementById(containerId);
-    items.forEach(item => {
+    items.forEach(function(item) {
       const chip = document.createElement('div');
       chip.className = 'chip';
       chip.textContent = item;
-      chip.onclick = () => toggleChip(chip, item, key, max, containerId.replace('-chips', '-count'));
+      chip.onclick = function() { toggleChip(chip, item, key, max, containerId.replace('-chips', '-count')); };
       grid.appendChild(chip);
     });
   }
@@ -846,41 +814,43 @@
     const arr = selected[key];
     if (chip.classList.contains('selected')) {
       chip.classList.remove('selected');
-      selected[key] = arr.filter(v => v !== value);
+      selected[key] = arr.filter(function(v) { return v !== value; });
     } else {
-      if (arr.length >= max) return;
+      if (arr.length >= max) { return; }
       chip.classList.add('selected');
       arr.push(value);
     }
-    document.getElementById(countId).textContent = `${selected[key].length} / ${max}`;
+    document.getElementById(countId).textContent = selected[key].length + ' / ' + max;
   }
 
   buildChips(INTERESTS, 'interests-chips', 'interests', 4);
   buildChips(PERSONALITIES, 'personality-chips', 'personality', 4);
   buildChips(VALUES, 'values-chips', 'values', 4);
 
-  // ── Step navigation ────────────────────────────────────────────────────────
+  function updateProgress(step) {
+    const fill = document.getElementById('progress-fill');
+    fill.style.width = ((step / 3) * 100) + '%';
+    ['pl1','pl2','pl3'].forEach(function(id, i) {
+      document.getElementById(id).classList.toggle('active', i < step);
+    });
+  }
+
+  updateProgress(1);
+
   function goStep(n) {
-    // Validate before moving forward
     if (n === 2) {
-  const name = document.getElementById('name').value.trim();
-  const age = parseInt(document.getElementById('age').value);
-  const gender = document.getElementById('gender').value;
-  const interestedIn = document.getElementById('interested_in').value;
-  const goal = document.getElementById('relationship_goal').value;
-  const err = document.getElementById('err1');
-  if (!name || !age || !gender || !interestedIn || !goal) {
-    err.textContent = 'Please fill in all fields to continue.';
-    err.style.display = 'block';
-    return;
-  }
-  if (age < 18) {
-    err.textContent = 'You must be 18 or older.';
-    err.style.display = 'block';
-    return;
-  }
-  err.style.display = 'none';
-}
+      const name = document.getElementById('name').value.trim();
+      const age = parseInt(document.getElementById('age').value);
+      const gender = document.getElementById('gender').value;
+      const interestedIn = document.getElementById('interested_in').value;
+      const goal = document.getElementById('relationship_goal').value;
+      const err = document.getElementById('err1');
+
+      if (!name || !age || !gender || !interestedIn || !goal) {
+        err.textContent = 'Please fill in all fields to continue.';
+        err.style.display = 'block';
+        return;
+      }
       if (age < 18) {
         err.textContent = 'You must be 18 or older.';
         err.style.display = 'block';
@@ -909,29 +879,17 @@
       err.style.display = 'none';
     }
 
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-    document.getElementById(`step${n}`).classList.add('active');
+    document.querySelectorAll('.step-card').forEach(function(c) { c.classList.remove('active'); });
+    document.getElementById('step' + n).classList.add('active');
     updateProgress(n);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function updateProgress(step) {
-    const wrap = document.getElementById('progress-wrap');
-    const fill = document.getElementById('progress-fill');
-    wrap.style.display = step > 0 ? 'block' : 'none';
-    fill.style.width = `${(step / 3) * 100}%`;
-    ['pl1', 'pl2', 'pl3'].forEach((id, i) => {
-      document.getElementById(id).classList.toggle('active', i < step);
-    });
-  }
-
-  updateProgress(1);
-
-  // ── Find matches ───────────────────────────────────────────────────────────
   async function findMatches() {
     const name = document.getElementById('name').value.trim();
     const age = parseInt(document.getElementById('age').value);
     const gender = document.getElementById('gender').value;
+    const interested_in = document.getElementById('interested_in').value;
     const relationship_goal = document.getElementById('relationship_goal').value;
     const bio = document.getElementById('bio').value.trim();
     const err = document.getElementById('err3');
@@ -947,33 +905,31 @@
     const personality = selected.personality.join(', ');
     const values = selected.values.join(', ');
 
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.step-card').forEach(function(c) { c.classList.remove('active'); });
     document.getElementById('loading').style.display = 'block';
-    document.getElementById('progress-wrap').style.display = 'none';
 
     try {
-      const res = await fetch(`${API}/match/new`, {
+      const res = await fetch(API + '/match/new', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, age, gender, interests, personality, values, relationship_goal, bio })
+        body: JSON.stringify({ name, age, gender, interested_in, interests, personality, values, relationship_goal, bio })
       });
 
       if (!res.ok) {
         const e = await res.json();
-        throw new Error(e.detail?.[0]?.msg || 'Something went wrong');
+        throw new Error(e.detail ? (e.detail[0] ? e.detail[0].msg : 'Error') : 'Something went wrong');
       }
 
       const matches = await res.json();
 
-      // Also get ghosting data
-      const ghostRes = await fetch(`${API}/match/1/ghosting`);
+      // Get ghosting data
+      const ghostRes = await fetch(API + '/match/1/ghosting');
       let ghostData = [];
-      if (ghostRes.ok) ghostData = await ghostRes.json();
+      if (ghostRes.ok) { ghostData = await ghostRes.json(); }
 
       document.getElementById('loading').style.display = 'none';
       document.getElementById('results').style.display = 'block';
-      document.getElementById('results-sub').textContent =
-        `Found ${matches.length} highly compatible people for ${name}`;
+      document.getElementById('results-sub').textContent = 'Found ' + matches.length + ' highly compatible people for ' + name;
 
       const list = document.getElementById('match-list');
       list.innerHTML = '';
@@ -982,70 +938,70 @@
       const avatarClasses = ['avatar-1', 'avatar-2', 'avatar-3'];
       const rankLabels = ['Top Match', '2nd', '3rd'];
 
-      matches.forEach((match, i) => {
+      matches.forEach(function(match, i) {
         const card = document.createElement('div');
         card.className = 'match-card';
-        card.style.animationDelay = `${i * 0.12}s`;
+        card.style.animationDelay = (i * 0.12) + 's';
 
-        // Try to get ghosting for this match
         const ghost = ghostData[i] ? ghostData[i].anti_ghosting : null;
         const risk = ghost ? ghost.ghosting_risk : null;
         const green = ghost ? ghost.green_flags : [];
         const risks = ghost ? ghost.risk_factors : [];
 
-        card.innerHTML = `
-          <div class="match-rank ${i === 0 ? 'top' : ''}">${rankLabels[i]}</div>
-          <div class="match-header-row">
-            <div class="avatar ${avatarClasses[i]}">${avatarEmojis[i]}</div>
-            <div>
-              <div class="match-name">${match.name}</div>
-              <div class="match-meta">Age ${match.age} &nbsp;·&nbsp; ${match.relationship_goal}</div>
-            </div>
-            <div class="score-block">
-              <div class="score-value">${match.compatibility_score}</div>
-              <div class="score-unit">Match %</div>
-            </div>
-          </div>
-          <div class="match-bio">${match.bio}</div>
-          ${risk ? `
-          <div class="ghost-wrap">
-            <div class="ghost-left">
-              <div class="ghost-eyebrow">Engagement signals</div>
-              <div class="flags">
-                ${green.map(f => `<span class="flag flag-green">✓ ${f}</span>`).join('')}
-                ${risks.map(f => `<span class="flag flag-red">⚠ ${f}</span>`).join('')}
-              </div>
-            </div>
-            <div class="risk-block">
-              <div class="risk-label">Ghost risk</div>
-              <span class="risk-pill risk-${risk}">${risk}</span>
-            </div>
-          </div>` : ''}
-        `;
+        card.innerHTML =
+          '<div class="match-rank ' + (i === 0 ? 'top' : '') + '">' + rankLabels[i] + '</div>' +
+          '<div class="match-header-row">' +
+            '<div class="avatar ' + avatarClasses[i] + '">' + avatarEmojis[i] + '</div>' +
+            '<div>' +
+              '<div class="match-name">' + match.name + '</div>' +
+              '<div class="match-meta">Age ' + match.age + ' &nbsp;·&nbsp; ' + match.relationship_goal + '</div>' +
+            '</div>' +
+            '<div class="score-block">' +
+              '<div class="score-value">' + match.compatibility_score + '</div>' +
+              '<div class="score-unit">Match %</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="match-bio">' + match.bio + '</div>' +
+          (risk ?
+            '<div class="ghost-wrap">' +
+              '<div class="ghost-left">' +
+                '<div class="ghost-eyebrow">Engagement signals</div>' +
+                '<div class="flags">' +
+                  green.map(function(f) { return '<span class="flag flag-green">✓ ' + f + '</span>'; }).join('') +
+                  risks.map(function(f) { return '<span class="flag flag-red">⚠ ' + f + '</span>'; }).join('') +
+                '</div>' +
+              '</div>' +
+              '<div class="risk-block">' +
+                '<div class="risk-label">Ghost risk</div>' +
+                '<span class="risk-pill risk-' + risk + '">' + risk + '</span>' +
+              '</div>' +
+            '</div>'
+          : '');
+
         list.appendChild(card);
       });
 
-    } catch (err2) {
+    } catch(e) {
       document.getElementById('loading').style.display = 'none';
-      goStep(3);
-      document.getElementById('err3').textContent = err2.message || 'Something went wrong. Please try again.';
+      document.querySelectorAll('.step-card').forEach(function(c) { c.classList.remove('active'); });
+      document.getElementById('step3').classList.add('active');
+      document.getElementById('err3').textContent = e.message || 'Something went wrong. Please try again.';
       document.getElementById('err3').style.display = 'block';
     }
   }
 
-  // ── Reset ──────────────────────────────────────────────────────────────────
   function reset() {
     document.getElementById('results').style.display = 'none';
     document.getElementById('match-list').innerHTML = '';
-
-    // Clear selections
-    Object.keys(selected).forEach(k => selected[k] = []);
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-    ['interests-count', 'personality-count', 'values-count'].forEach(id => {
+    Object.keys(selected).forEach(function(k) { selected[k] = []; });
+    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+    ['interests-count','personality-count','values-count'].forEach(function(id) {
       document.getElementById(id).textContent = '0 / 4';
     });
-
-    goStep(1);
+    document.querySelectorAll('.step-card').forEach(function(c) { c.classList.remove('active'); });
+    document.getElementById('step1').classList.add('active');
+    updateProgress(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
 
