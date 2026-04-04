@@ -699,6 +699,15 @@
         </select>
       </div>
       <div class="field">
+        <label>Interested in</label>
+        <select id="interested_in">
+          <option value="">Select...</option>
+          <option value="women">Women</option>
+          <option value="men">Men</option>
+          <option value="everyone">Everyone</option>
+        </select>
+      </div>
+      <div class="field">
         <label>I'm looking for</label>
         <select id="relationship_goal">
           <option value="">Select...</option>
@@ -854,16 +863,24 @@
   function goStep(n) {
     // Validate before moving forward
     if (n === 2) {
-      const name = document.getElementById('name').value.trim();
-      const age = parseInt(document.getElementById('age').value);
-      const gender = document.getElementById('gender').value;
-      const goal = document.getElementById('relationship_goal').value;
-      const err = document.getElementById('err1');
-      if (!name || !age || !gender || !goal) {
-        err.textContent = 'Please fill in all fields to continue.';
-        err.style.display = 'block';
-        return;
-      }
+  const name = document.getElementById('name').value.trim();
+  const age = parseInt(document.getElementById('age').value);
+  const gender = document.getElementById('gender').value;
+  const interestedIn = document.getElementById('interested_in').value;
+  const goal = document.getElementById('relationship_goal').value;
+  const err = document.getElementById('err1');
+  if (!name || !age || !gender || !interestedIn || !goal) {
+    err.textContent = 'Please fill in all fields to continue.';
+    err.style.display = 'block';
+    return;
+  }
+  if (age < 18) {
+    err.textContent = 'You must be 18 or older.';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+}
       if (age < 18) {
         err.textContent = 'You must be 18 or older.';
         err.style.display = 'block';

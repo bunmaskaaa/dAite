@@ -78,6 +78,7 @@ class NewUser(BaseModel):
     name: str
     age: int
     gender: str
+    interested_in: str  # add this
     interests: str
     personality: str
     values: str
@@ -99,6 +100,14 @@ class NewUser(BaseModel):
         allowed = {"male", "female", "non-binary", "other"}
         if v.lower() not in allowed:
             raise ValueError(f"Gender must be one of: {', '.join(allowed)}")
+        return v.lower()
+
+    @field_validator("interested_in")
+    @classmethod
+    def validate_interested_in(cls, v):
+        allowed = {"men", "women", "everyone"}
+        if v.lower() not in allowed:
+            raise ValueError(f"Interested in must be one of: {', '.join(allowed)}")
         return v.lower()
 
     @field_validator("relationship_goal")
@@ -124,7 +133,6 @@ class NewUser(BaseModel):
         if len(v.strip()) < 3:
             raise ValueError("This field cannot be empty")
         return v.strip()
-
 
 class MatchResult(BaseModel):
     id: int
@@ -291,23 +299,41 @@ def get_ghosting_analysis(user_id: int, top_k: int = 3):
 
 @app.post("/match/new", response_model=list[MatchResult])
 def match_new_user(new_user: NewUser, top_k: int = 3):
-    """
-    Match a brand new user (not in the database) against all existing users.
-    This is the core dAite flow — embed their profile on the fly and find matches.
-    """
-    # Build profile text and embed it
+    """Match a brand new user against all existing users."""
+    from models.matcher import compatibility_score
+    import faiss as faiss_module
+
     user_dict = new_user.model_dump()
     profile_text = build_profile_text(user_dict)
     query_embedding = model.encode([profile_text], convert_to_numpy=True).astype("float32")
-    faiss.normalize_L2(query_embedding)
+    faiss_module.normalize_L2(query_embedding)
 
-    # Search the index
-    distances, indices = index.search(query_embedding, top_k)
+    # Filter users by gender preference BEFORE searching
+    interested_in = new_user.interested_in.lower()
+    if interested_in == "men":
+        filtered_users = [u for u in users if u["gender"] == "male"]
+    elif interested_in == "women":
+        filtered_users = [u for u in users if u["gender"] == "female"]
+    else:
+        filtered_users = users
+
+    if not filtered_users:
+        raise HTTPException(status_code=404, detail="No users found matching your preference")
+
+    # Get indices of filtered users in the original list
+    filtered_indices = [users.index(u) for u in filtered_users]
+    filtered_embeddings = embeddings[filtered_indices].copy()
+    faiss_module.normalize_L2(filtered_embeddings)
+
+    # Build a temporary index from filtered users only
+    temp_index = faiss.IndexFlatIP(filtered_embeddings.shape[1])
+    temp_index.add(filtered_embeddings)
+
+    distances, indices = temp_index.search(query_embedding, min(top_k, len(filtered_users)))
 
     matches = []
     for dist, idx in zip(distances[0], indices[0]):
-        matched_user = users[idx]
-        from models.matcher import compatibility_score
+        matched_user = filtered_users[idx]
         score = compatibility_score(user_dict, matched_user, float(dist))
         matches.append(MatchResult(
             id=matched_user["id"],
