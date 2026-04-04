@@ -4,279 +4,691 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>dAite 💘</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #06060f;
+      --surface: #0d0d1f;
+      --surface2: #12122a;
+      --surface3: #17173a;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.15);
+      --rose: #d4607a;
+      --rose-glow: rgba(212,96,122,0.2);
+      --gold: #b8965a;
+      --text: #ede8e3;
+      --muted: #6a6682;
+      --muted2: #9990b8;
+      --green: #5bab82;
+      --amber: #d49050;
+      --red: #d06070;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Georgia', serif;
-      background: #0f0f1a;
-      color: #f0f0f0;
+      font-family: 'Jost', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.4;
+    }
+
+    /* Glow blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 {
+      width: 500px; height: 500px;
+      top: -150px; left: -100px;
+      background: radial-gradient(circle, rgba(212,96,122,0.07), transparent 70%);
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      bottom: -100px; right: -80px;
+      background: radial-gradient(circle, rgba(184,150,90,0.06), transparent 70%);
+    }
+    .blob-3 {
+      width: 300px; height: 300px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(91,171,130,0.03), transparent 70%);
+    }
+
+    /* Header */
     header {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      padding: 48px 24px 24px;
+      padding: 72px 24px 48px;
     }
 
-    header h1 {
-      font-size: 3rem;
-      color: #e87ca0;
-      letter-spacing: 2px;
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    header p {
-      color: #aaa;
-      margin-top: 8px;
-      font-size: 1rem;
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--rose), var(--gold));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      animation: glow 3s ease-in-out infinite alternate;
     }
 
+    @keyframes glow {
+      from { box-shadow: 0 0 20px rgba(212,96,122,0.2); }
+      to { box-shadow: 0 0 40px rgba(212,96,122,0.5); }
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--rose-glow) 50%, var(--gold) 100%);
+      background: linear-gradient(135deg, #ede8e3, #d4607a, #b8965a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 0.78rem;
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .header-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), var(--gold), transparent);
+      margin: 20px auto 0;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+      display: none;
+    }
+
+    .progress-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      border-radius: 1px;
+      transition: width 0.5s ease;
+      width: 33%;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .progress-label {
+      font-size: 0.68rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.3s;
+    }
+
+    .progress-label.active { color: var(--rose); }
+
+    /* Container */
     .container {
-      max-width: 720px;
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 0 24px 80px;
     }
 
-    .card {
-      background: #1a1a2e;
-      border: 1px solid #2e2e4e;
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 24px;
+    /* Step cards */
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 40px;
+      display: none;
+      animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    .card h2 {
-      font-size: 1.2rem;
-      color: #e87ca0;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #2e2e4e;
-      padding-bottom: 12px;
+    .step-card.active { display: block; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .form-row {
+    .step-num {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+      font-weight: 400;
+    }
+
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .step-sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 22px; }
+
+    .row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
     }
 
     label {
-      font-size: 0.85rem;
-      color: #aaa;
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 8px;
     }
 
-    input, select, textarea {
-      background: #0f0f1a;
-      border: 1px solid #2e2e4e;
-      border-radius: 8px;
-      color: #f0f0f0;
-      padding: 10px 14px;
-      font-family: 'Georgia', serif;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #e87ca0;
-    }
-
-    textarea { resize: vertical; min-height: 90px; }
-
-    select option { background: #1a1a2e; }
-
-    .btn {
+    input, select {
       width: 100%;
-      padding: 14px;
-      background: #e87ca0;
-      color: #0f0f1a;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-family: 'Georgia', serif;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 8px;
-    }
-
-    .btn:hover { background: #f09ab8; }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { background: #555; cursor: not-allowed; }
-
-    .results { display: none; }
-
-    .match-card {
-      background: #1a1a2e;
-      border: 1px solid #2e2e4e;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 16px;
-      position: relative;
-      transition: border-color 0.2s;
-    }
-
-    .match-card:hover { border-color: #e87ca0; }
-
-    .match-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .match-name {
-      font-size: 1.2rem;
-      color: #f0f0f0;
-      font-weight: bold;
-    }
-
-    .match-meta {
-      font-size: 0.85rem;
-      color: #aaa;
-      margin-top: 2px;
-    }
-
-    .score-badge {
-      background: #e87ca0;
-      color: #0f0f1a;
-      font-weight: bold;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.95rem;
-      white-space: nowrap;
-    }
-
-    .match-bio {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      padding: 13px 16px;
+      font-family: 'Jost', sans-serif;
       font-size: 0.9rem;
-      color: #ccc;
-      line-height: 1.6;
-      margin-bottom: 16px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      -webkit-appearance: none;
     }
 
-    .ghosting-section {
-      background: #0f0f1a;
-      border-radius: 10px;
-      padding: 14px;
+    input:focus, select:focus {
+      border-color: rgba(212,96,122,0.4);
+      box-shadow: 0 0 0 3px rgba(212,96,122,0.06);
+      background: var(--surface3);
     }
 
-    .ghosting-header {
+    input::placeholder { color: rgba(106,102,130,0.5); }
+
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      padding: 13px 16px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+      height: 110px;
+      line-height: 1.7;
+    }
+
+    textarea:focus {
+      border-color: rgba(212,96,122,0.4);
+      box-shadow: 0 0 0 3px rgba(212,96,122,0.06);
+    }
+
+    textarea::placeholder { color: rgba(106,102,130,0.5); }
+
+    /* Multi-select chip system */
+    .chip-field { margin-bottom: 24px; }
+
+    .chip-label {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
 
-    .ghosting-label {
-      font-size: 0.8rem;
-      color: #aaa;
-      text-transform: uppercase;
+    .chip-count {
+      font-size: 0.72rem;
+      color: var(--rose);
       letter-spacing: 1px;
     }
 
-    .risk-badge {
-      padding: 3px 10px;
-      border-radius: 12px;
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted2);
       font-size: 0.8rem;
-      font-weight: bold;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
     }
 
-    .risk-Low { background: #1a3a2a; color: #4caf7d; }
-    .risk-Medium { background: #3a2a1a; color: #f0a050; }
-    .risk-High { background: #3a1a1a; color: #f06050; }
-
-    .flags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-
-    .flag {
-      background: #1a2e1a;
-      color: #4caf7d;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.78rem;
+    .chip:hover {
+      border-color: rgba(212,96,122,0.3);
+      color: var(--text);
+      background: var(--surface3);
     }
 
-    .risk-factor {
-      background: #2e1a1a;
-      color: #f06050;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.78rem;
+    .chip.selected {
+      background: linear-gradient(135deg, rgba(212,96,122,0.2), rgba(184,150,90,0.1));
+      border-color: rgba(212,96,122,0.5);
+      color: var(--text);
     }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #aaa;
-      display: none;
-    }
+    .chip.selected::before { content: '✓ '; font-size: 0.7rem; }
 
-    .loading span {
-      display: inline-block;
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
-    }
-
-    .error {
-      background: #2e1a1a;
-      color: #f06050;
+    /* Error */
+    .error-msg {
+      background: rgba(208,96,112,0.08);
+      border: 1px solid rgba(208,96,112,0.2);
+      color: #e08090;
       border-radius: 10px;
-      padding: 16px;
+      padding: 12px 16px;
+      font-size: 0.83rem;
+      font-weight: 300;
       margin-bottom: 16px;
       display: none;
+      line-height: 1.5;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--rose) 0%, #a03050 100%);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 8px 32px rgba(212,96,122,0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 12px 40px rgba(212,96,122,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-back {
+      padding: 15px 20px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-family: 'Jost', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover { border-color: var(--border-hover); color: var(--text); }
+
+    /* Loading */
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 80px 24px;
+      animation: fadeIn 0.4s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    .loading-anim {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .loading-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rose);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; background: mix(var(--rose), var(--gold), 50%); background: #c07868; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; background: var(--gold); }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(-12px); opacity: 1; }
+    }
+
+    .loading-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      margin-bottom: 8px;
+    }
+
+    .loading-sub { color: var(--muted); font-size: 0.83rem; font-weight: 300; }
+
+    /* Results */
+    #results { display: none; }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 36px;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    .results-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
     }
 
     .results-title {
-      text-align: center;
-      font-size: 1.4rem;
-      color: #e87ca0;
-      margin-bottom: 24px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      margin-bottom: 6px;
     }
 
+    .results-sub { color: var(--muted); font-size: 0.83rem; font-weight: 300; }
+
+    /* Match card */
+    .match-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 16px;
+      animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .match-card:hover {
+      border-color: rgba(212,96,122,0.25);
+      transform: translateY(-2px);
+    }
+
+    .match-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .match-card:hover::after { opacity: 1; }
+
+    .match-rank {
+      position: absolute;
+      top: 24px; right: 24px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .match-rank.top { color: var(--gold); }
+
+    .match-header-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .avatar-1 { background: linear-gradient(135deg, rgba(212,96,122,0.3), rgba(184,150,90,0.2)); }
+    .avatar-2 { background: linear-gradient(135deg, rgba(91,171,130,0.3), rgba(91,130,171,0.2)); }
+    .avatar-3 { background: linear-gradient(135deg, rgba(184,150,90,0.3), rgba(212,96,122,0.2)); }
+
+    .match-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 3px;
+    }
+
+    .match-meta { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.5px; }
+
+    .score-block {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .score-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--rose), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .score-unit { font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+    .match-bio {
+      font-size: 0.85rem;
+      color: rgba(237,232,227,0.6);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Ghosting section */
+    .ghost-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .ghost-left { flex: 1; }
+
+    .ghost-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .flags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .flag {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.73rem;
+      font-weight: 300;
+    }
+
+    .flag-green { background: rgba(91,171,130,0.1); color: var(--green); }
+    .flag-red { background: rgba(208,96,112,0.1); color: var(--red); }
+
+    .risk-block { text-align: right; }
+
+    .risk-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+
+    .risk-pill {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    .risk-Low { background: rgba(91,171,130,0.12); color: var(--green); border: 1px solid rgba(91,171,130,0.2); }
+    .risk-Medium { background: rgba(212,144,80,0.12); color: var(--amber); border: 1px solid rgba(212,144,80,0.2); }
+    .risk-High { background: rgba(208,96,112,0.12); color: var(--red); border: 1px solid rgba(208,96,112,0.2); }
+
+    .btn-reset {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    .btn-reset:hover { border-color: var(--border-hover); color: var(--text); }
+
     @media (max-width: 600px) {
-      .form-row { grid-template-columns: 1fr; }
-      header h1 { font-size: 2rem; }
+      .row-2 { grid-template-columns: 1fr; }
+      .step-card { padding: 28px 22px; }
+      .match-card { padding: 22px; }
+      .logo-text { font-size: 2rem; }
+      header { padding: 48px 24px 36px; }
     }
   </style>
 </head>
 <body>
 
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
 <header>
-  <h1>dAite 💘</h1>
-  <p>Trust-first AI dating — matched by personality, not photos</p>
+  <div class="logo-wrap">
+    <div class="logo-icon">💘</div>
+    <div class="logo-text">dAite</div>
+  </div>
+  <p class="tagline">Matched by who you are, not what you look like</p>
+  <div class="header-line"></div>
 </header>
+
+<!-- Progress -->
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-labels">
+    <span class="progress-label active" id="pl1">You</span>
+    <span class="progress-label" id="pl2">Personality</span>
+    <span class="progress-label" id="pl3">Your story</span>
+  </div>
+</div>
 
 <div class="container">
 
-  <!-- Form -->
-  <div class="card" id="form-card">
-    <h2>Tell us about yourself</h2>
+  <!-- Step 1: Basic info -->
+  <div class="step-card active" id="step1">
+    <p class="step-num">Step 1 of 3</p>
+    <h2 class="step-title">Who are you?</h2>
+    <p class="step-sub">Just the basics — we care more about what's inside.</p>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Name</label>
+    <div class="row-2">
+      <div class="field">
+        <label>First name</label>
         <input type="text" id="name" placeholder="Your name" />
       </div>
-      <div class="form-group">
+      <div class="field">
         <label>Age</label>
         <input type="number" id="age" placeholder="25" min="18" max="99" />
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
+    <div class="row-2">
+      <div class="field">
         <label>Gender</label>
         <select id="gender">
           <option value="">Select...</option>
@@ -286,8 +698,8 @@
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Looking for</label>
+      <div class="field">
+        <label>I'm looking for</label>
         <select id="relationship_goal">
           <option value="">Select...</option>
           <option value="long-term relationship">Long-term relationship</option>
@@ -297,153 +709,326 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Interests</label>
-      <input type="text" id="interests" placeholder="e.g. hiking, cooking, photography, travel" />
+    <div class="error-msg" id="err1"></div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Personality -->
+  <div class="step-card" id="step2">
+    <p class="step-num">Step 2 of 3</p>
+    <h2 class="step-title">What makes you, <em>you</em>?</h2>
+    <p class="step-sub">Pick up to 4 from each — be honest, not aspirational.</p>
+
+    <div class="chip-field">
+      <div class="chip-label">
+        <label style="margin:0">Interests</label>
+        <span class="chip-count" id="interests-count">0 / 4</span>
+      </div>
+      <div class="chip-grid" id="interests-chips"></div>
     </div>
 
-    <div class="form-group">
-      <label>Personality</label>
-      <input type="text" id="personality" placeholder="e.g. introverted, creative, empathetic, curious" />
+    <div class="chip-field">
+      <div class="chip-label">
+        <label style="margin:0">Personality traits</label>
+        <span class="chip-count" id="personality-count">0 / 4</span>
+      </div>
+      <div class="chip-grid" id="personality-chips"></div>
     </div>
 
-    <div class="form-group">
-      <label>Values</label>
-      <input type="text" id="values" placeholder="e.g. honesty, adventure, personal growth, loyalty" />
+    <div class="chip-field">
+      <div class="chip-label">
+        <label style="margin:0">Core values</label>
+        <span class="chip-count" id="values-count">0 / 4</span>
+      </div>
+      <div class="chip-grid" id="values-chips"></div>
     </div>
 
-    <div class="form-group">
-      <label>Your bio</label>
-      <textarea id="bio" placeholder="Tell potential matches about yourself..."></textarea>
+    <div class="error-msg" id="err2"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(1)">←</button>
+      <button class="btn-primary" onclick="goStep(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Bio -->
+  <div class="step-card" id="step3">
+    <p class="step-num">Step 3 of 3</p>
+    <h2 class="step-title">Your story</h2>
+    <p class="step-sub">Write a few sentences about yourself. This is what the AI reads to find your best matches.</p>
+
+    <div class="field">
+      <label>Bio <span style="color:var(--muted);font-size:0.65rem;letter-spacing:1px">(min. 20 characters)</span></label>
+      <textarea id="bio" placeholder="E.g. I spend my weekends hiking and my evenings cooking elaborate meals. I'm looking for someone who appreciates the quiet moments as much as the adventures..."></textarea>
     </div>
 
-    <div class="error" id="error-box"></div>
-    <button class="btn" id="match-btn" onclick="findMatches()">💘 Find My Matches</button>
+    <div class="error-msg" id="err3"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(2)">←</button>
+      <button class="btn-primary" id="submit-btn" onclick="findMatches()">Find My Matches 💘</button>
+    </div>
   </div>
 
   <!-- Loading -->
-  <div class="loading" id="loading">
-    <span>Finding your matches...</span>
+  <div id="loading">
+    <div class="loading-anim">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+    <h3 class="loading-title">Finding your matches</h3>
+    <p class="loading-sub">Our AI is scanning personalities across the database...</p>
   </div>
 
   <!-- Results -->
-  <div class="results" id="results">
-    <p class="results-title">Your top matches 💘</p>
+  <div id="results">
+    <div class="results-header">
+      <p class="results-eyebrow">Compatibility Report</p>
+      <h2 class="results-title">Your Matches</h2>
+      <p class="results-sub" id="results-sub"></p>
+    </div>
     <div id="match-list"></div>
-    <button class="btn" onclick="reset()" style="background:#2e2e4e; color:#f0f0f0; margin-top:8px;">
-      ← Start over
-    </button>
+    <button class="btn-reset" onclick="reset()">← Start over</button>
   </div>
 
 </div>
 
 <script>
-  const API = "https://daite-production.up.railway.app";
+  const API = window.location.origin;
 
-  async function findMatches() {
-    const name = document.getElementById("name").value.trim();
-    const age = parseInt(document.getElementById("age").value);
-    const gender = document.getElementById("gender").value;
-    const relationship_goal = document.getElementById("relationship_goal").value;
-    const interests = document.getElementById("interests").value.trim();
-    const personality = document.getElementById("personality").value.trim();
-    const values = document.getElementById("values").value.trim();
-    const bio = document.getElementById("bio").value.trim();
+  // ── Chip data ──────────────────────────────────────────────────────────────
+  const INTERESTS = [
+    'hiking', 'photography', 'cooking', 'travel', 'reading', 'yoga',
+    'gaming', 'fitness', 'music', 'art', 'cycling', 'writing',
+    'philosophy', 'dancing', 'meditation', 'tech', 'cinema', 'coffee',
+    'surfing', 'running', 'podcasts', 'chess', 'volunteering', 'fashion'
+  ];
 
-    const errorBox = document.getElementById("error-box");
-    errorBox.style.display = "none";
+  const PERSONALITIES = [
+    'introverted', 'extroverted', 'analytical', 'creative', 'adventurous',
+    'empathetic', 'humorous', 'calm', 'energetic', 'ambitious',
+    'spontaneous', 'loyal', 'curious', 'optimistic', 'independent',
+    'thoughtful', 'warm', 'confident', 'patient', 'passionate'
+  ];
 
-    // Basic validation
-    if (!name || !age || !gender || !relationship_goal || !interests || !personality || !values || !bio) {
-      errorBox.textContent = "Please fill in all fields before finding your matches.";
-      errorBox.style.display = "block";
-      return;
+  const VALUES = [
+    'honesty', 'adventure', 'personal growth', 'family', 'loyalty',
+    'ambition', 'fun', 'friendship', 'intellectual depth', 'independence',
+    'creativity', 'authenticity', 'freedom', 'mindfulness', 'compassion',
+    'integrity', 'balance', 'positivity', 'spirituality', 'career'
+  ];
+
+  const selected = { interests: [], personality: [], values: [] };
+
+  // ── Build chip grids ───────────────────────────────────────────────────────
+  function buildChips(items, containerId, key, max) {
+    const grid = document.getElementById(containerId);
+    items.forEach(item => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = item;
+      chip.onclick = () => toggleChip(chip, item, key, max, containerId.replace('-chips', '-count'));
+      grid.appendChild(chip);
+    });
+  }
+
+  function toggleChip(chip, value, key, max, countId) {
+    const arr = selected[key];
+    if (chip.classList.contains('selected')) {
+      chip.classList.remove('selected');
+      selected[key] = arr.filter(v => v !== value);
+    } else {
+      if (arr.length >= max) return;
+      chip.classList.add('selected');
+      arr.push(value);
     }
+    document.getElementById(countId).textContent = `${selected[key].length} / ${max}`;
+  }
+
+  buildChips(INTERESTS, 'interests-chips', 'interests', 4);
+  buildChips(PERSONALITIES, 'personality-chips', 'personality', 4);
+  buildChips(VALUES, 'values-chips', 'values', 4);
+
+  // ── Step navigation ────────────────────────────────────────────────────────
+  function goStep(n) {
+    // Validate before moving forward
+    if (n === 2) {
+      const name = document.getElementById('name').value.trim();
+      const age = parseInt(document.getElementById('age').value);
+      const gender = document.getElementById('gender').value;
+      const goal = document.getElementById('relationship_goal').value;
+      const err = document.getElementById('err1');
+      if (!name || !age || !gender || !goal) {
+        err.textContent = 'Please fill in all fields to continue.';
+        err.style.display = 'block';
+        return;
+      }
+      if (age < 18) {
+        err.textContent = 'You must be 18 or older.';
+        err.style.display = 'block';
+        return;
+      }
+      err.style.display = 'none';
+    }
+
+    if (n === 3) {
+      const err = document.getElementById('err2');
+      if (selected.interests.length < 2) {
+        err.textContent = 'Please select at least 2 interests.';
+        err.style.display = 'block';
+        return;
+      }
+      if (selected.personality.length < 2) {
+        err.textContent = 'Please select at least 2 personality traits.';
+        err.style.display = 'block';
+        return;
+      }
+      if (selected.values.length < 2) {
+        err.textContent = 'Please select at least 2 core values.';
+        err.style.display = 'block';
+        return;
+      }
+      err.style.display = 'none';
+    }
+
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+    document.getElementById(`step${n}`).classList.add('active');
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress(step) {
+    const wrap = document.getElementById('progress-wrap');
+    const fill = document.getElementById('progress-fill');
+    wrap.style.display = step > 0 ? 'block' : 'none';
+    fill.style.width = `${(step / 3) * 100}%`;
+    ['pl1', 'pl2', 'pl3'].forEach((id, i) => {
+      document.getElementById(id).classList.toggle('active', i < step);
+    });
+  }
+
+  updateProgress(1);
+
+  // ── Find matches ───────────────────────────────────────────────────────────
+  async function findMatches() {
+    const name = document.getElementById('name').value.trim();
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const relationship_goal = document.getElementById('relationship_goal').value;
+    const bio = document.getElementById('bio').value.trim();
+    const err = document.getElementById('err3');
 
     if (bio.length < 20) {
-      errorBox.textContent = "Your bio must be at least 20 characters — tell us more about yourself!";
-      errorBox.style.display = "block";
+      err.textContent = 'Please write at least 20 characters in your bio.';
+      err.style.display = 'block';
       return;
     }
+    err.style.display = 'none';
 
-    // Show loading
-    document.getElementById("form-card").style.display = "none";
-    document.getElementById("loading").style.display = "block";
-    document.getElementById("match-btn").disabled = true;
+    const interests = selected.interests.join(', ');
+    const personality = selected.personality.join(', ');
+    const values = selected.values.join(', ');
+
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('progress-wrap').style.display = 'none';
 
     try {
       const res = await fetch(`${API}/match/new`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, age, gender, interests, personality, values, relationship_goal, bio })
       });
 
-      const matches = await res.json();
-
-      // Now get ghosting analysis for each match
-      const matchList = document.getElementById("match-list");
-      matchList.innerHTML = "";
-
-      for (const match of matches) {
-        const ghostRes = await fetch(`${API}/match/new`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, age, gender, interests, personality, values, relationship_goal, bio })
-        });
-
-        const card = createMatchCard(match, null);
-        matchList.appendChild(card);
+      if (!res.ok) {
+        const e = await res.json();
+        throw new Error(e.detail?.[0]?.msg || 'Something went wrong');
       }
 
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("results").style.display = "block";
+      const matches = await res.json();
 
-    } catch (err) {
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("form-card").style.display = "block";
-      errorBox.textContent = "Something went wrong. Please try again.";
-      errorBox.style.display = "block";
-      document.getElementById("match-btn").disabled = false;
+      // Also get ghosting data
+      const ghostRes = await fetch(`${API}/match/1/ghosting`);
+      let ghostData = [];
+      if (ghostRes.ok) ghostData = await ghostRes.json();
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results-sub').textContent =
+        `Found ${matches.length} highly compatible people for ${name}`;
+
+      const list = document.getElementById('match-list');
+      list.innerHTML = '';
+
+      const avatarEmojis = ['🌸', '✨', '🌙'];
+      const avatarClasses = ['avatar-1', 'avatar-2', 'avatar-3'];
+      const rankLabels = ['Top Match', '2nd', '3rd'];
+
+      matches.forEach((match, i) => {
+        const card = document.createElement('div');
+        card.className = 'match-card';
+        card.style.animationDelay = `${i * 0.12}s`;
+
+        // Try to get ghosting for this match
+        const ghost = ghostData[i] ? ghostData[i].anti_ghosting : null;
+        const risk = ghost ? ghost.ghosting_risk : null;
+        const green = ghost ? ghost.green_flags : [];
+        const risks = ghost ? ghost.risk_factors : [];
+
+        card.innerHTML = `
+          <div class="match-rank ${i === 0 ? 'top' : ''}">${rankLabels[i]}</div>
+          <div class="match-header-row">
+            <div class="avatar ${avatarClasses[i]}">${avatarEmojis[i]}</div>
+            <div>
+              <div class="match-name">${match.name}</div>
+              <div class="match-meta">Age ${match.age} &nbsp;·&nbsp; ${match.relationship_goal}</div>
+            </div>
+            <div class="score-block">
+              <div class="score-value">${match.compatibility_score}</div>
+              <div class="score-unit">Match %</div>
+            </div>
+          </div>
+          <div class="match-bio">${match.bio}</div>
+          ${risk ? `
+          <div class="ghost-wrap">
+            <div class="ghost-left">
+              <div class="ghost-eyebrow">Engagement signals</div>
+              <div class="flags">
+                ${green.map(f => `<span class="flag flag-green">✓ ${f}</span>`).join('')}
+                ${risks.map(f => `<span class="flag flag-red">⚠ ${f}</span>`).join('')}
+              </div>
+            </div>
+            <div class="risk-block">
+              <div class="risk-label">Ghost risk</div>
+              <span class="risk-pill risk-${risk}">${risk}</span>
+            </div>
+          </div>` : ''}
+        `;
+        list.appendChild(card);
+      });
+
+    } catch (err2) {
+      document.getElementById('loading').style.display = 'none';
+      goStep(3);
+      document.getElementById('err3').textContent = err2.message || 'Something went wrong. Please try again.';
+      document.getElementById('err3').style.display = 'block';
     }
   }
 
-  function createMatchCard(match, ghosting) {
-    const div = document.createElement("div");
-    div.className = "match-card";
-
-    const risk = ghosting ? ghosting.ghosting_risk : null;
-    const greenFlags = ghosting ? ghosting.green_flags : [];
-    const riskFactors = ghosting ? ghosting.risk_factors : [];
-
-    div.innerHTML = `
-      <div class="match-header">
-        <div>
-          <div class="match-name">${match.name}</div>
-          <div class="match-meta">Age ${match.age} · ${match.relationship_goal}</div>
-        </div>
-        <div class="score-badge">${match.compatibility_score}%</div>
-      </div>
-      <div class="match-bio">${match.bio}</div>
-      ${risk ? `
-      <div class="ghosting-section">
-        <div class="ghosting-header">
-          <span class="ghosting-label">Ghosting Risk</span>
-          <span class="risk-badge risk-${risk}">${risk}</span>
-        </div>
-        <div class="flags">
-          ${greenFlags.map(f => `<span class="flag">✓ ${f}</span>`).join("")}
-          ${riskFactors.map(f => `<span class="risk-factor">⚠ ${f}</span>`).join("")}
-        </div>
-      </div>` : ""}
-    `;
-    return div;
-  }
-
+  // ── Reset ──────────────────────────────────────────────────────────────────
   function reset() {
-    document.getElementById("results").style.display = "none";
-    document.getElementById("form-card").style.display = "block";
-    document.getElementById("match-btn").disabled = false;
-    document.getElementById("match-list").innerHTML = "";
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('match-list').innerHTML = '';
+
+    // Clear selections
+    Object.keys(selected).forEach(k => selected[k] = []);
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    ['interests-count', 'personality-count', 'values-count'].forEach(id => {
+      document.getElementById(id).textContent = '0 / 4';
+    });
+
+    goStep(1);
   }
 </script>
 
