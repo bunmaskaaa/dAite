@@ -59,9 +59,70 @@ def compatibility_score(user_a: dict, user_b: dict, cosine_sim: float) -> float:
 
     # Cap at 100
     return round(min(score, 100), 2)
+# ── 7. Anti-ghosting score ─────────────────────────────────────────────────────
+# Predicts likelihood of continued engagement based on personality compatibility
+# Higher score = lower ghosting risk
+def anti_ghosting_score(user_a: dict, user_b: dict, compatibility: float) -> dict:
+    score = 100  # start optimistic
+    reasons = []
+    green_flags = []
 
+    # Personality compatibility signals
+    a_traits = set(user_a.get("personality", "").lower().split(", "))
+    b_traits = set(user_b.get("personality", "").lower().split(", "))
+    shared_traits = a_traits & b_traits
 
-# ── 7. Find top matches for a given user ──────────────────────────────────────
+    if len(shared_traits) >= 2:
+        green_flags.append(f"Shared personality traits: {', '.join(shared_traits)}")
+    elif len(shared_traits) == 0:
+        score -= 15
+        reasons.append("Very different personality types — may lose interest quickly")
+
+    # Relationship goal alignment
+    if user_a.get("relationship_goal") != user_b.get("relationship_goal"):
+        score -= 25
+        reasons.append("Mismatched relationship goals — high ghosting risk")
+    else:
+        green_flags.append(f"Both seeking {user_a.get('relationship_goal')}")
+
+    # Values alignment
+    a_values = set(user_a.get("values", "").lower().split(", "))
+    b_values = set(user_b.get("values", "").lower().split(", "))
+    shared_values = a_values & b_values
+
+    if len(shared_values) >= 2:
+        green_flags.append(f"Shared values: {', '.join(shared_values)}")
+    elif len(shared_values) == 0:
+        score -= 20
+        reasons.append("No overlapping core values — connection may not deepen")
+
+    # Compatibility bonus
+    if compatibility >= 80:
+        score += 10
+        green_flags.append("High overall compatibility")
+    elif compatibility < 60:
+        score -= 10
+        reasons.append("Below average compatibility score")
+
+    # Cap score
+    score = round(min(max(score, 0), 100), 2)
+
+    # Risk label
+    if score >= 80:
+        risk = "Low"
+    elif score >= 60:
+        risk = "Medium"
+    else:
+        risk = "High"
+
+    return {
+        "ghosting_risk": risk,
+        "engagement_score": score,
+        "green_flags": green_flags,
+        "risk_factors": reasons
+    }
+
+# ── 8. Find top matches for a given user ──────────────────────────────────────
 def find_matches(user_id: int, users: list, index: faiss.IndexFlatIP,
                  embeddings: np.ndarray, top_k: int = 3) -> list:
 
@@ -101,7 +162,7 @@ def find_matches(user_id: int, users: list, index: faiss.IndexFlatIP,
     return matches[:top_k]
 
 
-# ── 8. Quick test ─────────────────────────────────────────────────────────────
+# ── 9. Quick test ─────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(__file__))
     users_path = os.path.join(base_dir, "data", "users.json")

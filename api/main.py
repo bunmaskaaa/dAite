@@ -152,6 +152,27 @@ def get_stats():
             "note": "Lower avg similarity = more diverse user embeddings"
         }
     }
+@app.get("/match/{user_id}/ghosting")
+def get_ghosting_analysis(user_id: int, top_k: int = 3):
+    """Returns matches with anti-ghosting analysis for each."""
+    from models.matcher import anti_ghosting_score
+
+    user = next((u for u in users if u["id"] == user_id), None)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User {user_id} not found")
+
+    matches = find_matches(user_id, users, index, embeddings, top_k=top_k)
+
+    results = []
+    for match in matches:
+        matched_user = next(u for u in users if u["id"] == match["id"])
+        ghosting = anti_ghosting_score(user, matched_user, match["compatibility_score"])
+        results.append({
+            **match,
+            "anti_ghosting": ghosting
+        })
+
+    return results
 
 @app.post("/match/new", response_model=list[MatchResult])
 def match_new_user(new_user: NewUser, top_k: int = 3):
