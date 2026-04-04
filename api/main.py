@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 import numpy as np
 import sys
 import os
@@ -75,6 +75,47 @@ class NewUser(BaseModel):
     values: str
     relationship_goal: str
     bio: str
+
+    @field_validator("age")
+    @classmethod
+    def validate_age(cls, v):
+        if v < 18:
+            raise ValueError("Age must be 18 or older")
+        if v > 100:
+            raise ValueError("Please enter a valid age")
+        return v
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v):
+        allowed = {"male", "female", "non-binary", "other"}
+        if v.lower() not in allowed:
+            raise ValueError(f"Gender must be one of: {', '.join(allowed)}")
+        return v.lower()
+
+    @field_validator("relationship_goal")
+    @classmethod
+    def validate_goal(cls, v):
+        allowed = {"long-term relationship", "casual dating", "friendship first"}
+        if v.lower() not in allowed:
+            raise ValueError(f"Relationship goal must be one of: {', '.join(allowed)}")
+        return v.lower()
+
+    @field_validator("bio")
+    @classmethod
+    def validate_bio(cls, v):
+        if len(v.strip()) < 20:
+            raise ValueError("Bio must be at least 20 characters — tell us about yourself!")
+        if len(v) > 500:
+            raise ValueError("Bio must be under 500 characters")
+        return v.strip()
+
+    @field_validator("interests", "personality", "values")
+    @classmethod
+    def validate_not_empty(cls, v):
+        if len(v.strip()) < 3:
+            raise ValueError("This field cannot be empty")
+        return v.strip()
 
 
 class MatchResult(BaseModel):
