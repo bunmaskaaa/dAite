@@ -1,6 +1,8 @@
-# dAite 💘
-🚀 **Live API:** https://daite-production.up.railway.app/docs
+dAite 💘
+
 > Trust-first, AI-powered dating compatibility engine
+
+🚀 **Live API:** https://daite-production.up.railway.app/docs
 
 dAite matches users based on **personality, values, and relationship goals** — not photos.
 It uses NLP embeddings and vector similarity search to find genuinely compatible people,
@@ -15,26 +17,39 @@ reducing choice overload and encouraging meaningful connections.
 3. Vectors are stored in a **FAISS index** for efficient nearest-neighbor search
 4. **Cosine similarity** finds the closest matches
 5. A **compatibility scoring system** layers in relationship goal alignment on top of the base similarity score
-6. Results are served via a **FastAPI REST API**
+6. An **anti-ghosting engine** analyzes green flags and risk factors for each match
+7. Results are served via a **FastAPI REST API** with request logging and input validation
 
 ---
 
 ## ML Pipeline
-```
 User Profile Text
-      ↓
+↓
 Sentence Transformer (all-MiniLM-L6-v2)
-      ↓
+↓
 384-dim Vector Embedding
-      ↓
+↓
 FAISS Index (cosine similarity)
-      ↓
+↓
 Top-K Nearest Neighbors
-      ↓
-Compatibility Scoring
-      ↓
+↓
+Compatibility Scoring + Anti-Ghosting Analysis
+↓
 Ranked Match Results
-```
+
+---
+
+## Evaluation Results
+
+Run `python3 evaluate.py` to generate a full report. Latest results on 50 users:
+
+| Metric | Value |
+|---|---|
+| Mean compatibility score | 85.04 |
+| Goal alignment rate | 42.7% |
+| Embedding diversity score | 31.5% |
+| Matches below 60 score | 0 |
+| Total matches analyzed | 150 |
 
 ---
 
@@ -46,22 +61,24 @@ Ranked Match Results
 | Vector Search | FAISS (Facebook AI Similarity Search) |
 | API | FastAPI |
 | Server | Uvicorn |
+| Deployment | Railway |
 | Data | NumPy, Pandas |
 
 ---
 
 ## Project Structure
-```
 dAite/
 ├── data/
-│   └── users.json        # Synthetic user dataset
+│   └── users.json              # 50 synthetic users
 ├── models/
-│   └── matcher.py        # Embedding pipeline + FAISS matching
+│   └── matcher.py              # Embedding pipeline + FAISS matching + anti-ghosting
 ├── api/
-│   └── main.py           # FastAPI REST API
+│   └── main.py                 # FastAPI REST API with logging + validation
+├── generate_users.py           # Synthetic dataset generator
+├── evaluate.py                 # Matching engine evaluation script
+├── test_matcher.py             # 27-test suite
 ├── requirements.txt
 └── README.md
-```
 
 ---
 
@@ -72,8 +89,12 @@ dAite/
 | GET | `/` | API info |
 | GET | `/users` | List all users |
 | GET | `/users/{id}` | Get a single user |
-| GET | `/match/{user_id}` | Get top matches for an existing user |
+| GET | `/match/{user_id}` | Top matches for an existing user |
+| GET | `/match/{user_id}/ghosting` | Matches with anti-ghosting analysis |
 | POST | `/match/new` | Match a brand new user against the database |
+| POST | `/similar` | Find similar users from raw text |
+| GET | `/stats` | Dataset + embedding space analytics |
+| GET | `/health` | Health check |
 
 ---
 
@@ -95,6 +116,19 @@ uvicorn api.main:app --reload
 ```
 
 Visit `http://127.0.0.1:8000/docs` for the interactive Swagger UI.
+
+---
+
+## Run Tests
+```bash
+python3 test_matcher.py
+```
+Results: 27 passed, 0 failed
+
+## Run Evaluation
+```bash
+python3 evaluate.py
+```
 
 ---
 
@@ -124,8 +158,9 @@ Response:
 ## Planned Features
 
 - pgvector integration for persistent vector storage
-- Anti-ghosting nudge system
 - AI-generated message suggestions (clearly labeled)
 - Frontend demo interface
 
 ---
+
+*Built as part of an ML engineering portfolio project.*
