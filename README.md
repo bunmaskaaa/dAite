@@ -2,8 +2,9 @@ dAite 💘
 
 > Trust-first, AI-powered dating compatibility engine
 
-🚀 **Live API:** https://daite-production.up.railway.app/docs
+🚀 **Live Demo:** https://daite-production.up.railway.app/ui
 
+📖 **API Docs:** https://daite-production.up.railway.app/docs
 dAite matches users based on **personality, values, and relationship goals** — not photos.
 It uses NLP embeddings and vector similarity search to find genuinely compatible people,
 reducing choice overload and encouraging meaningful connections.
