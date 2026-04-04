@@ -113,7 +113,45 @@ def get_matches(user_id: int, top_k: int = 3):
         raise HTTPException(status_code=404, detail="No matches found")
 
     return matches
+@app.get("/stats")
+def get_stats():
+    """Returns dataset statistics and embedding space insights."""
+    from collections import Counter
+    import numpy as np
 
+    goals = Counter(u["relationship_goal"] for u in users)
+    genders = Counter(u["gender"] for u in users)
+    ages = [u["age"] for u in users]
+
+    # Compute average pairwise similarity across all users
+    # This tells us how "spread out" the embedding space is
+    sample_size = min(20, len(users))
+    sample_embeddings = embeddings[:sample_size]
+    
+    similarities = []
+    for i in range(sample_size):
+        for j in range(i + 1, sample_size):
+            a = sample_embeddings[i]
+            b = sample_embeddings[j]
+            sim = float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+            similarities.append(sim)
+
+    return {
+        "total_users": len(users),
+        "gender_distribution": dict(genders),
+        "relationship_goals": dict(goals),
+        "age_stats": {
+            "min": min(ages),
+            "max": max(ages),
+            "average": round(sum(ages) / len(ages), 1)
+        },
+        "embedding_space": {
+            "dimensions": int(embeddings.shape[1]),
+            "avg_pairwise_similarity": round(float(np.mean(similarities)), 4),
+            "similarity_std": round(float(np.std(similarities)), 4),
+            "note": "Lower avg similarity = more diverse user embeddings"
+        }
+    }
 
 @app.post("/match/new", response_model=list[MatchResult])
 def match_new_user(new_user: NewUser, top_k: int = 3):
