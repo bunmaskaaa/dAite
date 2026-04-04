@@ -178,6 +178,7 @@ def get_matches(user_id: int, top_k: int = 3):
         raise HTTPException(status_code=404, detail="No matches found")
 
     return matches
+
 @app.get("/stats")
 def get_stats():
     """Returns dataset statistics and embedding space insights."""
@@ -217,6 +218,47 @@ def get_stats():
             "note": "Lower avg similarity = more diverse user embeddings"
         }
     }
+
+@app.post("/similar")
+def find_similar(payload: dict, top_k: int = 5):
+    """
+    Given a raw bio text, find the most similar users in the database.
+    Different from /match/new — this takes just a text string, not a full profile.
+    Useful for exploring the embedding space.
+    """
+    bio_text = payload.get("text", "").strip()
+    
+    if not bio_text:
+        raise HTTPException(status_code=400, detail="Please provide a 'text' field")
+    if len(bio_text) < 10:
+        raise HTTPException(status_code=400, detail="Text must be at least 10 characters")
+
+    # Embed the raw text directly
+    query_embedding = model.encode([bio_text], convert_to_numpy=True).astype("float32")
+    faiss.normalize_L2(query_embedding)
+
+    # Search
+    distances, indices = index.search(query_embedding, top_k)
+
+    results = []
+    for dist, idx in zip(distances[0], indices[0]):
+        u = users[idx]
+        results.append({
+            "id": u["id"],
+            "name": u["name"],
+            "age": u["age"],
+            "gender": u["gender"],
+            "relationship_goal": u["relationship_goal"],
+            "bio": u["bio"],
+            "similarity_score": round(float(dist) * 100, 2)
+        })
+
+    return {
+        "query": bio_text,
+        "total_results": len(results),
+        "matches": results
+    }
+
 @app.get("/match/{user_id}/ghosting")
 def get_ghosting_analysis(user_id: int, top_k: int = 3):
     """Returns matches with anti-ghosting analysis for each."""
