@@ -3,6 +3,17 @@ from pydantic import BaseModel
 import numpy as np
 import sys
 import os
+import logging
+import time
+from datetime import datetime
+
+# ── Logging setup ──────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+logger = logging.getLogger("dAite")
 
 # Add parent directory to path so we can import from models/
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -23,6 +34,19 @@ app = FastAPI(
     description="Trust-first AI dating compatibility engine",
     version="1.0.0"
 )
+
+# ── Request logging middleware ─────────────────────────────────────────────────
+@app.middleware("http")
+async def log_requests(request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    duration = round((time.time() - start) * 1000, 2)
+    logger.info(
+        f"{request.method} {request.url.path} | "
+        f"status={response.status_code} | "
+        f"duration={duration}ms"
+    )
+    return response
 
 # ── Load everything once at startup ───────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
