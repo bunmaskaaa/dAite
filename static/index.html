@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>dAite 💘</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #0f0f1a;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 48px 24px 24px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #e87ca0;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2e2e4e;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      color: #e87ca0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #2e2e4e;
+      padding-bottom: 12px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input, select, textarea {
+      background: #0f0f1a;
+      border: 1px solid #2e2e4e;
+      border-radius: 8px;
+      color: #f0f0f0;
+      padding: 10px 14px;
+      font-family: 'Georgia', serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #e87ca0;
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    select option { background: #1a1a2e; }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #e87ca0;
+      color: #0f0f1a;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { background: #f09ab8; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: #555; cursor: not-allowed; }
+
+    .results { display: none; }
+
+    .match-card {
+      background: #1a1a2e;
+      border: 1px solid #2e2e4e;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .match-card:hover { border-color: #e87ca0; }
+
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .match-name {
+      font-size: 1.2rem;
+      color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    .match-meta {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .score-badge {
+      background: #e87ca0;
+      color: #0f0f1a;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .match-bio {
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .ghosting-section {
+      background: #0f0f1a;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .ghosting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .ghosting-label {
+      font-size: 0.8rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .risk-badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .risk-Low { background: #1a3a2a; color: #4caf7d; }
+    .risk-Medium { background: #3a2a1a; color: #f0a050; }
+    .risk-High { background: #3a1a1a; color: #f06050; }
+
+    .flags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+    .flag {
+      background: #1a2e1a;
+      color: #4caf7d;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+    }
+
+    .risk-factor {
+      background: #2e1a1a;
+      color: #f06050;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+      display: none;
+    }
+
+    .loading span {
+      display: inline-block;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    .error {
+      background: #2e1a1a;
+      color: #f06050;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .results-title {
+      text-align: center;
+      font-size: 1.4rem;
+      color: #e87ca0;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>dAite 💘</h1>
+  <p>Trust-first AI dating — matched by personality, not photos</p>
+</header>
+
+<div class="container">
+
+  <!-- Form -->
+  <div class="card" id="form-card">
+    <h2>Tell us about yourself</h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="name" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="25" min="18" max="99" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="gender">
+          <option value="">Select...</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Looking for</label>
+        <select id="relationship_goal">
+          <option value="">Select...</option>
+          <option value="long-term relationship">Long-term relationship</option>
+          <option value="casual dating">Casual dating</option>
+          <option value="friendship first">Friendship first</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Interests</label>
+      <input type="text" id="interests" placeholder="e.g. hiking, cooking, photography, travel" />
+    </div>
+
+    <div class="form-group">
+      <label>Personality</label>
+      <input type="text" id="personality" placeholder="e.g. introverted, creative, empathetic, curious" />
+    </div>
+
+    <div class="form-group">
+      <label>Values</label>
+      <input type="text" id="values" placeholder="e.g. honesty, adventure, personal growth, loyalty" />
+    </div>
+
+    <div class="form-group">
+      <label>Your bio</label>
+      <textarea id="bio" placeholder="Tell potential matches about yourself..."></textarea>
+    </div>
+
+    <div class="error" id="error-box"></div>
+    <button class="btn" id="match-btn" onclick="findMatches()">💘 Find My Matches</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <span>Finding your matches...</span>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <p class="results-title">Your top matches 💘</p>
+    <div id="match-list"></div>
+    <button class="btn" onclick="reset()" style="background:#2e2e4e; color:#f0f0f0; margin-top:8px;">
+      ← Start over
+    </button>
+  </div>
+
+</div>
+
+<script>
+  const API = "https://daite-production.up.railway.app";
+
+  async function findMatches() {
+    const name = document.getElementById("name").value.trim();
+    const age = parseInt(document.getElementById("age").value);
+    const gender = document.getElementById("gender").value;
+    const relationship_goal = document.getElementById("relationship_goal").value;
+    const interests = document.getElementById("interests").value.trim();
+    const personality = document.getElementById("personality").value.trim();
+    const values = document.getElementById("values").value.trim();
+    const bio = document.getElementById("bio").value.trim();
+
+    const errorBox = document.getElementById("error-box");
+    errorBox.style.display = "none";
+
+    // Basic validation
+    if (!name || !age || !gender || !relationship_goal || !interests || !personality || !values || !bio) {
+      errorBox.textContent = "Please fill in all fields before finding your matches.";
+      errorBox.style.display = "block";
+      return;
+    }
+
+    if (bio.length < 20) {
+      errorBox.textContent = "Your bio must be at least 20 characters — tell us more about yourself!";
+      errorBox.style.display = "block";
+      return;
+    }
+
+    // Show loading
+    document.getElementById("form-card").style.display = "none";
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("match-btn").disabled = true;
+
+    try {
+      const res = await fetch(`${API}/match/new`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, age, gender, interests, personality, values, relationship_goal, bio })
+      });
+
+      const matches = await res.json();
+
+      // Now get ghosting analysis for each match
+      const matchList = document.getElementById("match-list");
+      matchList.innerHTML = "";
+
+      for (const match of matches) {
+        const ghostRes = await fetch(`${API}/match/new`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, age, gender, interests, personality, values, relationship_goal, bio })
+        });
+
+        const card = createMatchCard(match, null);
+        matchList.appendChild(card);
+      }
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("results").style.display = "block";
+
+    } catch (err) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("form-card").style.display = "block";
+      errorBox.textContent = "Something went wrong. Please try again.";
+      errorBox.style.display = "block";
+      document.getElementById("match-btn").disabled = false;
+    }
+  }
+
+  function createMatchCard(match, ghosting) {
+    const div = document.createElement("div");
+    div.className = "match-card";
+
+    const risk = ghosting ? ghosting.ghosting_risk : null;
+    const greenFlags = ghosting ? ghosting.green_flags : [];
+    const riskFactors = ghosting ? ghosting.risk_factors : [];
+
+    div.innerHTML = `
+      <div class="match-header">
+        <div>
+          <div class="match-name">${match.name}</div>
+          <div class="match-meta">Age ${match.age} · ${match.relationship_goal}</div>
+        </div>
+        <div class="score-badge">${match.compatibility_score}%</div>
+      </div>
+      <div class="match-bio">${match.bio}</div>
+      ${risk ? `
+      <div class="ghosting-section">
+        <div class="ghosting-header">
+          <span class="ghosting-label">Ghosting Risk</span>
+          <span class="risk-badge risk-${risk}">${risk}</span>
+        </div>
+        <div class="flags">
+          ${greenFlags.map(f => `<span class="flag">✓ ${f}</span>`).join("")}
+          ${riskFactors.map(f => `<span class="risk-factor">⚠ ${f}</span>`).join("")}
+        </div>
+      </div>` : ""}
+    `;
+    return div;
+  }
+
+  function reset() {
+    document.getElementById("results").style.display = "none";
+    document.getElementById("form-card").style.display = "block";
+    document.getElementById("match-btn").disabled = false;
+    document.getElementById("match-list").innerHTML = "";
+  }
+</script>
+
+</body>
+</html>

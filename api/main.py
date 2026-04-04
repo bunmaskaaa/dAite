@@ -6,6 +6,8 @@ import os
 import logging
 import time
 from datetime import datetime
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # ── Logging setup ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -34,6 +36,12 @@ app = FastAPI(
     description="Trust-first AI dating compatibility engine",
     version="1.0.0"
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/ui")
+def serve_ui():
+    return FileResponse("static/index.html")
 
 # ── Request logging middleware ─────────────────────────────────────────────────
 @app.middleware("http")
