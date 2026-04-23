@@ -51,3 +51,4 @@ typing_extensions==4.15.0
 uvicorn==0.42.0
 anthropic>=0.25.0anthropic>=0.25.0
 sniffio
+distro
