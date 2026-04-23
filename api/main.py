@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from api.agent import run_agent
 
 # ── Logging setup ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -42,6 +43,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/ui")
 def serve_ui():
     return FileResponse("static/index.html")
+
+@app.get("/agent")
+def serve_agent_ui():
+    return FileResponse("static/agent.html")
 
 # ── Request logging middleware ─────────────────────────────────────────────────
 @app.middleware("http")
@@ -78,7 +83,7 @@ class NewUser(BaseModel):
     name: str
     age: int
     gender: str
-    interested_in: str  # add this
+    interested_in: str
     interests: str
     personality: str
     values: str
@@ -134,6 +139,7 @@ class NewUser(BaseModel):
             raise ValueError("This field cannot be empty")
         return v.strip()
 
+
 class MatchResult(BaseModel):
     id: int
     name: str
@@ -141,6 +147,11 @@ class MatchResult(BaseModel):
     relationship_goal: str
     bio: str
     compatibility_score: float
+
+
+class AgentRequest(BaseModel):
+    message: str
+    history: list = []
 
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
@@ -151,7 +162,7 @@ def root():
         "app": "dAite",
         "tagline": "Trust-first AI dating",
         "version": "1.0.0",
-        "endpoints": ["/users", "/match/{user_id}", "/match/new"]
+        "endpoints": ["/users", "/match/{user_id}", "/match/new", "/agent/chat", "/agent"]
     }
 
 
@@ -195,21 +206,19 @@ def get_matches(user_id: int, top_k: int = 3):
 
     return matches
 
+
 @app.get("/stats")
 def get_stats():
     """Returns dataset statistics and embedding space insights."""
     from collections import Counter
-    import numpy as np
 
     goals = Counter(u["relationship_goal"] for u in users)
     genders = Counter(u["gender"] for u in users)
     ages = [u["age"] for u in users]
 
-    # Compute average pairwise similarity across all users
-    # This tells us how "spread out" the embedding space is
     sample_size = min(20, len(users))
     sample_embeddings = embeddings[:sample_size]
-    
+
     similarities = []
     for i in range(sample_size):
         for j in range(i + 1, sample_size):
@@ -235,25 +244,20 @@ def get_stats():
         }
     }
 
+
 @app.post("/similar")
 def find_similar(payload: dict, top_k: int = 5):
-    """
-    Given a raw bio text, find the most similar users in the database.
-    Different from /match/new — this takes just a text string, not a full profile.
-    Useful for exploring the embedding space.
-    """
+    """Find similar users from raw text."""
     bio_text = payload.get("text", "").strip()
-    
+
     if not bio_text:
         raise HTTPException(status_code=400, detail="Please provide a 'text' field")
     if len(bio_text) < 10:
         raise HTTPException(status_code=400, detail="Text must be at least 10 characters")
 
-    # Embed the raw text directly
     query_embedding = model.encode([bio_text], convert_to_numpy=True).astype("float32")
     faiss.normalize_L2(query_embedding)
 
-    # Search
     distances, indices = index.search(query_embedding, top_k)
 
     results = []
@@ -274,6 +278,7 @@ def find_similar(payload: dict, top_k: int = 5):
         "total_results": len(results),
         "matches": results
     }
+
 
 @app.get("/match/{user_id}/ghosting")
 def get_ghosting_analysis(user_id: int, top_k: int = 3):
@@ -297,6 +302,7 @@ def get_ghosting_analysis(user_id: int, top_k: int = 3):
 
     return results
 
+
 @app.post("/match/new", response_model=list[MatchResult])
 def match_new_user(new_user: NewUser, top_k: int = 3):
     """Match a brand new user against all existing users."""
@@ -308,7 +314,6 @@ def match_new_user(new_user: NewUser, top_k: int = 3):
     query_embedding = model.encode([profile_text], convert_to_numpy=True).astype("float32")
     faiss_module.normalize_L2(query_embedding)
 
-    # Filter users by gender preference BEFORE searching
     interested_in = new_user.interested_in.lower()
     if interested_in == "men":
         filtered_users = [u for u in users if u["gender"] == "male"]
@@ -320,12 +325,10 @@ def match_new_user(new_user: NewUser, top_k: int = 3):
     if not filtered_users:
         raise HTTPException(status_code=404, detail="No users found matching your preference")
 
-    # Get indices of filtered users in the original list
     filtered_indices = [users.index(u) for u in filtered_users]
     filtered_embeddings = embeddings[filtered_indices].copy()
     faiss_module.normalize_L2(filtered_embeddings)
 
-    # Build a temporary index from filtered users only
     temp_index = faiss.IndexFlatIP(filtered_embeddings.shape[1])
     temp_index.add(filtered_embeddings)
 
@@ -346,3 +349,27 @@ def match_new_user(new_user: NewUser, top_k: int = 3):
 
     matches.sort(key=lambda x: x.compatibility_score, reverse=True)
     return matches
+
+
+@app.post("/agent/chat")
+def agent_chat(req: AgentRequest):
+    """
+    Agentic chat endpoint. Runs the Claude tool-calling loop
+    with access to the live dAite FAISS index and user database.
+    """
+    if not req.message.strip():
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY not set")
+
+    result = run_agent(
+        user_message=req.message,
+        conversation_history=req.history,
+        users=users,
+        embeddings=embeddings,
+        index=index,
+        model=model
+    )
+    return result
